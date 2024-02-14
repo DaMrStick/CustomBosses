@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/CustomBosses.iml" filepath="$PROJECT_DIR$/.idea/CustomBosses.iml" />
+      <module fileurl="file://$PROJECT_DIR$/customBosses.iml" filepath="$PROJECT_DIR$/customBosses.iml" />
     </modules>
   </component>
 </project>
