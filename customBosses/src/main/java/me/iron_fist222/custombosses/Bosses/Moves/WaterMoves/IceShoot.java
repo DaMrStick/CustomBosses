@@ -17,6 +17,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_20_R2.CraftWorld;
+import org.checkerframework.checker.units.qual.A;
 
 import java.util.List;
 
@@ -35,7 +36,12 @@ public class IceShoot extends FallingBlockEntity {
         this.shooter = owner;
         this.target = enemy;
         this.addTag("DeleteOnLanding");
-
+        LivingEntity nearestEntity = this.getCommandSenderWorld().getNearestEntity(LivingEntity.class, TargetingConditions.DEFAULT, null, this.getX(), this.getY(), this.getZ(), this.getBoundingBox().inflate(5));
+        if (nearestEntity!=null & nearestEntity!=this.shooter) {
+            if (this.getBoundingBox().intersects(target.getBoundingBox())) {
+                System.out.println("it does intersect");
+            }
+        }
     }
 
 
@@ -44,7 +50,7 @@ public class IceShoot extends FallingBlockEntity {
 
         this.move(MoverType.SELF, this.getDeltaMovement());
         ++this.lifeTime;
-        if (this.lifeTime>50) {
+        if (this.lifeTime > 50) {
             this.discard();
         }
 
@@ -54,7 +60,7 @@ public class IceShoot extends FallingBlockEntity {
         for(LivingEntity entity : test){
             System.out.println(entity);
         }*/
-        nearestEntity = this.getCommandSenderWorld().getNearestEntity(LivingEntity.class, TargetingConditions.DEFAULT,null,this.getX(),this.getY(),this.getZ(),this.getBoundingBox().inflate(5));
+        nearestEntity = this.getCommandSenderWorld().getNearestEntity(LivingEntity.class, TargetingConditions.DEFAULT, null, this.getX(), this.getY(), this.getZ(), this.getBoundingBox().inflate(5));
         //System.out.println(this.getBoundingBox().intersects(nearestEntity.getBoundingBox()));
         /*if (nearestEntity != null) {
             if (this.getBoundingBox().intersects(nearestEntity.getBoundingBox())) {
@@ -70,19 +76,24 @@ public class IceShoot extends FallingBlockEntity {
                 System.out.println(this.getBoundingBox().intersects(nearestEntity.getBoundingBox()));
             }
         }*/
-
-        HitResult hit = ProjectileUtil.getHitResultOnMoveVector(this,this::canHitEntity);
-        if (hit.getType() == HitResult.Type.ENTITY){
-            EntityHitResult eHit = (EntityHitResult) hit;
-            Entity hitEntity = eHit.getEntity(); 
-            if (hitEntity.isAlive()){
-                LivingEntity liveEntity = (LivingEntity) hitEntity;
-                liveEntity.setLastHurtByMob(this.shooter);
-                CompoundTag effect = new CompoundTag();
-                MobEffect slowEffect = MobEffects.MOVEMENT_SLOWDOWN;
-                liveEntity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 200, 3));
-                liveEntity.hurt(((Entity) this.shooter).damageSources().magic(), 3);
-                this.discard();
+        HitResult hit = ProjectileUtil.getEntityHitResult(this.level(),this,this.position(),this.getDeltaMovement().add(this.position()),this.getBoundingBox().expandTowards(this.getDeltaMovement()).inflate(1), this::canHitEntity);
+        if (hit!=null) {
+            if (hit.getType() == HitResult.Type.ENTITY) {
+                EntityHitResult eHit = (EntityHitResult) hit;
+                Entity hitEntity = eHit.getEntity();
+                LivingEntity liveEntity = null;
+                try {
+                    liveEntity = (LivingEntity) hitEntity;
+                } catch (Exception _) {
+                }
+                if (liveEntity != null) {
+                    liveEntity.setLastHurtByMob(this.shooter);
+                    CompoundTag effect = new CompoundTag();
+                    MobEffect slowEffect = MobEffects.MOVEMENT_SLOWDOWN;
+                    liveEntity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 200, 3));
+                    liveEntity.hurt(((Entity) this.shooter).damageSources().magic(), 3);
+                    this.discard();
+                }
             }
         }
         /*
@@ -102,6 +113,7 @@ public class IceShoot extends FallingBlockEntity {
     }
 
     protected boolean canHitEntity(Entity entity){
+        LivingEntity temp = null;
         if (!entity.canBeHitByProjectile()) {
             return false;
         }
