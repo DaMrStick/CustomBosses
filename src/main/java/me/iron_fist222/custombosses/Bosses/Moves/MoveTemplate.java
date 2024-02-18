@@ -19,6 +19,7 @@ public class MoveTemplate extends FallingBlockEntity {
 
     public MoveTemplate(Level world){
         super(EntityType.FALLING_BLOCK, world);
+        this.setNoGravity(true);
     }
 
     public MoveTemplate(Level world, Vec3 position, BlockState block){
@@ -28,7 +29,7 @@ public class MoveTemplate extends FallingBlockEntity {
         this.addAdditionalSaveData(blockState);
         blockState.put("BlockState", NbtUtils.writeBlockState(block));
         this.readAdditionalSaveData(blockState);
-        this.setNoGravity(false);
+        this.setNoGravity(true);
     }
 
 
@@ -36,6 +37,7 @@ public class MoveTemplate extends FallingBlockEntity {
         super(EntityType.FALLING_BLOCK,world);
         this.teleportTo(defLoc.x,defLoc.y,defLoc.z);
         this.setDeltaMovement(velocity);
+        this.setNoGravity(true);
         this.blocks = SummonMove(world,defLoc,block,velocity,facingDir,size,cls);
     }
 
@@ -54,6 +56,8 @@ public class MoveTemplate extends FallingBlockEntity {
                     MoveTemplate currentBlock = ctr.newInstance(world, centralPos, block);
                     curentPos = curentPos.add(rVector);
                     currentBlock.teleportTo(curentPos.x,curentPos.y,curentPos.z);
+                    currentBlock.setDeltaMovement(velocity);
+                    currentBlock.setNoGravity(true);
                     moveBlocks.add(currentBlock);
                 } catch (Exception e) {
                     throw new RuntimeException(e);
