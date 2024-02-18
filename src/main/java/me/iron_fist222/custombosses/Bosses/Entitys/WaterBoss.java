@@ -2,7 +2,8 @@ package me.iron_fist222.custombosses.Bosses.Entitys;
 
 
 import com.mojang.serialization.Dynamic;
-import me.iron_fist222.custombosses.Bosses.Moves.WaterMoves.IceShoot;
+import me.iron_fist222.custombosses.Bosses.Moves.MoveTemplate;
+import me.iron_fist222.custombosses.Bosses.Moves.WaterMoves.IcePush;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -17,10 +18,11 @@ import net.minecraft.world.entity.monster.RangedAttackMob;
 import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_20_R2.CraftWorld;
-import org.bukkit.entity.FallingBlock;
 import org.bukkit.util.Vector;
 import org.joml.Vector3d;
 
@@ -58,28 +60,48 @@ public class WaterBoss extends Villager implements RangedAttackMob {
 
     @Override
     public void performRangedAttack(LivingEntity livingEntity, float v) {
+//        System.out.println("Step0");
         ++this.attackTime;
         if (this.getTarget() != null & v < 1 & this.attackTime > this.attackCooldown)
         {
+
+//            System.out.println("step1");
             this.attackTime = 0;
             World world = this.getBukkitEntity().getWorld();
+            Level msWorld = ((CraftWorld)world).getHandle();
             //get enemy that it wants to attack
             LivingEntity target = this.getTarget();
             float speed = 2f;
+//            System.out.println("step 2");
             //get the direction to target
             Vector3d DirectionToTarget = new Vector3d(target.getX()-this.getX(),target.getY()-this.getY(),target.getZ()-this.getZ());
             //normalize the direction so that a farther player wont make the projectile start 10 blocks away form boss
             DirectionToTarget = DirectionToTarget.normalize();
+//            System.out.println("step 3");
             //multiply the direction by 10 so that it will be 1 block in front of boss NOT USED RN
-
+            Vector velocity = new Vector(DirectionToTarget.x*speed,DirectionToTarget.y*speed,DirectionToTarget.z*speed);
             Location loc = this.getBukkitEntity().getLocation();
-            IceShoot fallingIce = new IceShoot(new Location(world,loc.getX(),loc.getY()+1,loc.getZ()), this,this.getTarget());
+//            System.out.println("step 4");
+            IcePush icePush = new IcePush(msWorld,new Vec3(loc.getX(),loc.getY()+1,loc.getZ()),new Vec3(velocity.getX(),velocity.getY(),velocity.getZ()),new Vec3(DirectionToTarget.x,DirectionToTarget.y,DirectionToTarget.z),2);
+            for(MoveTemplate block : icePush.blocks){
+                msWorld.addFreshEntity(block);
+            }
+            msWorld.addFreshEntity(icePush);
 
+
+            /*IceShoot fallingIce = new IceShoot(new Location(world,loc.getX(),loc.getY()+1,loc.getZ()), this,this.getTarget());
+//            System.out.println("step 5");
             FallingBlock bukkitfallingice = ((FallingBlock) fallingIce.getBukkitEntity());
             bukkitfallingice.setGravity(false);
             bukkitfallingice.setCustomName("WaterBossIce");
+//            System.out.println("step 6");
             bukkitfallingice.setVelocity(new Vector(DirectionToTarget.x*speed,DirectionToTarget.y*speed,DirectionToTarget.z*speed));
             world.addEntity(bukkitfallingice);
+
+             */
+
+//            System.out.println("completed");
+
         }
 
     }

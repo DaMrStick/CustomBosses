@@ -21,7 +21,7 @@ public final class CustomBosses extends JavaPlugin implements Listener {
         // Plugin shutdown logic
     }
 
-    @EventHandler
+/*    @EventHandler
     public void BossMoveHitGround(EntityChangeBlockEvent e){
         System.out.println("hi");
         if (((CraftEntity)e.getEntity()).getHandle().getTags().contains("DeleteOnLanding")){
@@ -30,7 +30,7 @@ public final class CustomBosses extends JavaPlugin implements Listener {
             e.setCancelled(true);
         }
 
-    }
+    }*/
 
 
 }
