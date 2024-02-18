@@ -1,0 +1,8 @@
+name: customBosses
+version: '1.0-SNAPSHOT'
+main: me.iron_fist222.custombosses.CustomBosses
+api-version: '1.20'
+commands:
+  SummonWaterBoss:
+    description: Summons water boss from customBosses plugin
+    usage: / <command>
