@@ -2,7 +2,12 @@ name: customBosses
 version: '${project.version}'
 main: me.iron_fist222.custombosses.CustomBosses
 api-version: '1.20'
+permissions:
+  customBosses.bossSummoning:
+    description: allows you to summon bosses from the customBosses plugin
+    default: op
 commands:
   SummonWaterBoss:
     description: Summons water boss from customBosses plugin
     usage: / <command>
+    permission: customBosses.bossSummoning
