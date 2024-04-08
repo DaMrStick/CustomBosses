@@ -42,6 +42,9 @@ public class WaterBoss extends Villager implements RangedAttackMob {
     }
 
     @Override
+    public void refreshBrain(ServerLevel worldserver) {}
+
+    @Override
     protected Brain<?> makeBrain(Dynamic<?> dynamic) {
         VillagerProfession villagerprofession = this.getVillagerData().getProfession();
         Brain<Villager> behaviorcontroller = this.brainProvider().makeBrain(dynamic);
@@ -82,7 +85,7 @@ public class WaterBoss extends Villager implements RangedAttackMob {
             Vector velocity = new Vector(DirectionToTarget.x*speed,DirectionToTarget.y*speed,DirectionToTarget.z*speed);
             Location loc = this.getBukkitEntity().getLocation();
 //            System.out.println("step 4");
-            IcePush icePush = new IcePush(msWorld,new Vec3(loc.getX(),loc.getY()+1,loc.getZ()),new Vec3(velocity.getX(),velocity.getY(),velocity.getZ()),new Vec3(DirectionToTarget.x,DirectionToTarget.y,DirectionToTarget.z),2);
+            IcePush icePush = new IcePush(msWorld,new Vec3(loc.getX(),loc.getY()+1,loc.getZ()),new Vec3(velocity.getX(),velocity.getY(),velocity.getZ()),new Vec3(DirectionToTarget.x,DirectionToTarget.y,DirectionToTarget.z),3);
             for(MoveTemplate block : icePush.blocks){
                 msWorld.addFreshEntity(block);
             }

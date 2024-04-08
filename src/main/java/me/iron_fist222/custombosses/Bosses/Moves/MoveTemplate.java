@@ -53,6 +53,9 @@ public class MoveTemplate extends FallingBlockEntity {
         Vec3 uVector = facingDir.cross(rVector);
         Vec3 tempVector;
         Vec3 multiplier = new Vec3(1,1,1);
+        boolean InParts = false;
+        float NextLevelRemainder = -1;
+        float InsidePartsRemainder = -1;
         if(size > 1) {
             int loopSize = (int) (2*Math.pow(size,2)-size*2);
             for (int index = 0; index < loopSize; index++) {
@@ -61,26 +64,44 @@ public class MoveTemplate extends FallingBlockEntity {
                     curentPos = centralPos;
                     Constructor<MoveTemplate> ctr = cls.getConstructor(Level.class, Vec3.class, BlockState.class);
                     MoveTemplate currentBlock = ctr.newInstance(world, centralPos, block);
-                    float rSqrt = Math.round(Math.sqrt(index));
                     int remainder = index%2;
-                    float NextLevelRemainder = (float) (Math.round((2+Math.sqrt(4+8*index))/(4)) - (2+Math.sqrt(4+8*index))/(4));
-                    if (NextLevelRemainder == 0){
-                        multiplier = multiplier.add(new Vec3(1,1,1));
+                    if (NextLevelRemainder == 0 && index != 0){
+                        multiplier = multiplier.add(1,1,1);
+                        InParts = false;
+                        System.out.println("nlr");
+                        System.out.println(index);
+
+                    }
+                    if (InsidePartsRemainder==0 && index != 4){
+                        multiplier = multiplier.subtract(1,1,1);
+                        InParts = true;
+                        System.out.println("iprs");
+                        System.out.println(index);
+
                     }
                     if(remainder == 0){
                         tempVector = rVector;
-                        multiplier = multiplier.multiply(new Vec3(-1,-1,-1));
+                        if (InParts){
+                            tempVector = tempVector.add(multiplier.multiply(uVector));
+                        }
+                        multiplier = multiplier.multiply(-1,-1,-1);
                     }else{
                         tempVector = uVector;
+                        if (InParts){
+                            tempVector = tempVector.add(rVector);
+                        }
                     }
 
                     tempVector = tempVector.multiply(multiplier);
                     curentPos = curentPos.add(tempVector);
-                    System.out.println(multiplier);
+                    System.out.println(tempVector);
                     currentBlock.teleportTo(curentPos.x,curentPos.y,curentPos.z);
                     currentBlock.setDeltaMovement(velocity);
                     currentBlock.setNoGravity(true);
                     moveBlocks.add(currentBlock);
+                    NextLevelRemainder = (float) (Math.round((2+Math.sqrt(4+8*(index+1)))/(4)) - (2+Math.sqrt(4+8*(index+1)))/(4));
+                    InsidePartsRemainder = (float) (Math.round((2+Math.sqrt(4+8*(index-3)))/(4)) - (2+Math.sqrt(4+8*(index-3)))/(4));
+
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
