@@ -74,7 +74,7 @@ public class WaterBoss extends Villager implements RangedAttackMob {
             Level msWorld = ((CraftWorld)world).getHandle();
             //get enemy that it wants to attack
             LivingEntity target = this.getTarget();
-            float speed = 2f;
+            float speed = 4f;
 //            System.out.println("step 2");
             //get the direction to target
             Vector3d DirectionToTarget = new Vector3d(target.getX()-this.getX(),target.getY()-this.getY(),target.getZ()-this.getZ());

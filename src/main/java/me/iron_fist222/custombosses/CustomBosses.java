@@ -1,6 +1,7 @@
 package me.iron_fist222.custombosses;
 
 import me.iron_fist222.custombosses.Commands.SummonWaterBoss;
+import me.iron_fist222.custombosses.Commands.test1CMD;
 import org.bukkit.craftbukkit.v1_20_R2.entity.CraftEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -14,6 +15,7 @@ public final class CustomBosses extends JavaPlugin implements Listener {
         System.out.println("customBosses plugin v1 is now enabled");
         getServer().getPluginManager().registerEvents(this,this);
         getCommand("SummonWaterBoss").setExecutor(new SummonWaterBoss());
+        getCommand("TestMove1").setExecutor(new test1CMD());
     }
 
     @Override

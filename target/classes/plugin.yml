@@ -11,3 +11,12 @@ commands:
     description: Summons water boss from customBosses plugin
     usage: / <command>
     permission: customBosses.bossSummoning
+  TestMove1:
+    description: test move 1
+    usage: / <command>
+  TestMove2:
+    description: test move 2
+    usage: / <command>
+  TestMove3:
+    description: test move 3
+    usage: / <command>
