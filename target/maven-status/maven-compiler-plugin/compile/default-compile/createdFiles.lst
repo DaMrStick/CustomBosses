@@ -3,5 +3,6 @@ me\iron_fist222\custombosses\CustomBosses.class
 me\iron_fist222\custombosses\Commands\SummonWaterBoss.class
 me\iron_fist222\custombosses\Bosses\Moves\WaterMoves\IcePush.class
 me\iron_fist222\custombosses\Bosses\Moves\WaterMoves\IceShoot.class
+me\iron_fist222\custombosses\Bosses\Moves\WaterMoves\IceSpike.class
 me\iron_fist222\custombosses\Bosses\Entitys\WaterBoss.class
 me\iron_fist222\custombosses\Commands\test1CMD.class

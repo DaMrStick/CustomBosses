@@ -42,13 +42,18 @@ import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Vector;
 
 public class MoveTemplate extends FallingBlockEntity {
 
+    public LivingEntity shooter;
     public List<MoveTemplate> blocks;
     private BlockState blockState;
     public int time;
     public int lifetime = 60;
+    public Vec3 BaseVelocity;
+
+    public MoveTemplate groupParent;
 
     public MoveTemplate(Level world){
         super(EntityType.FALLING_BLOCK, world);
@@ -57,6 +62,7 @@ public class MoveTemplate extends FallingBlockEntity {
 
     public MoveTemplate(Level world, Vec3 position, BlockState block){
         super(EntityType.FALLING_BLOCK,world);
+        position = new Vec3(Math.round(position.x),Math.round(position.y),Math.round(position.z));
         this.teleportTo(position.x,position.y,position.z);
         CompoundTag blockStateTag = new CompoundTag();
         this.addAdditionalSaveData(blockStateTag);
@@ -67,28 +73,45 @@ public class MoveTemplate extends FallingBlockEntity {
     }
 
 
-    public MoveTemplate(Level world, Vec3 defLoc, BlockState block, Vec3 velocity, Vec3 facingDir, int size, Class cls){
+    public MoveTemplate(Level world, Vec3 defLoc, BlockState block, Vec3 velocity, Vec3 facingDir, int size, Class cls,LivingEntity shooter){
         super(EntityType.FALLING_BLOCK,world);
+        defLoc = new Vec3(Math.round(defLoc.x),Math.round(defLoc.y),Math.round(defLoc.z));
         this.teleportTo(defLoc.x,defLoc.y,defLoc.z);
-//        this.setDeltaMovement(velocity);
+        this.setDeltaMovement(velocity);
         this.setNoGravity(true);
-        this.blocks = SummonMove(world,defLoc,block,velocity,facingDir,size,cls);
+        this.blocks = SummonMoveTri(world,defLoc,block,velocity,facingDir,size,cls,shooter);
         CompoundTag blockStateTag = new CompoundTag();
         this.addAdditionalSaveData(blockStateTag);
         blockStateTag.put("BlockState",NbtUtils.writeBlockState(block));
         this.readAdditionalSaveData(blockStateTag);
         this.blockState = this.getBlockState();
+        BaseVelocity = velocity;
+        world.addFreshEntity(this);
+        this.shooter = shooter;
+
+        for(MoveTemplate Block : this.blocks){
+            Block.groupParent = this;
+        }
     }
 
-    public static List SummonMove(Level world, Vec3 centralPos, BlockState block, Vec3 velocity, Vec3 facingDir, int size, Class<MoveTemplate> cls){
+    public static List SummonMoveTri(Level world, Vec3 centralPos, BlockState block, Vec3 velocity, Vec3 facingDir, int size, Class<MoveTemplate> cls,LivingEntity shooter){
         List<MoveTemplate> moveBlocks = new ArrayList<MoveTemplate>();
         Vec3 curentPos = centralPos;
-        Vec3 rVector = facingDir.cross(new Vec3(0,1,0));
-        Vec3 uVector = facingDir.cross(rVector);
+        Vec3 rVector;
+        Vec3 uVector;
+        if(facingDir == new Vec3(0,1,0)){
+            rVector = new Vec3(0,0,1);
+            uVector = facingDir.cross(rVector);
+        }else{
+            rVector = facingDir.cross(new Vec3(0,1,0));
+            uVector = facingDir.cross(rVector);
+        }
+
         uVector = uVector.normalize();
         rVector = rVector.normalize();
-        System.out.println(rVector);
-        System.out.println(uVector);
+//        System.out.println(facingDir);
+//        System.out.println(rVector);
+//        System.out.println(uVector);
         Vec3 tempVector;
         Vec3 multiplier = new Vec3(1,1,1);
         boolean InParts = false;
@@ -129,12 +152,14 @@ public class MoveTemplate extends FallingBlockEntity {
 
                     tempVector = tempVector.multiply(multiplier);
                     curentPos = curentPos.add(tempVector);
-
+                    curentPos = new Vec3(Math.round(curentPos.x),Math.round(curentPos.y),Math.round(curentPos.z));
                     currentBlock.teleportTo(curentPos.x,curentPos.y,curentPos.z);
-//                    currentBlock.setDeltaMovement(velocity);
+                    currentBlock.setDeltaMovement(velocity);
                     currentBlock.setNoGravity(true);
-                    System.out.println((byte) currentBlock.getYRot());
+                    currentBlock.BaseVelocity = velocity;
                     moveBlocks.add(currentBlock);
+                    currentBlock.shooter = shooter;
+                    world.addFreshEntity(currentBlock);
                     NextLevelRemainder = (float) (Math.round((2+Math.sqrt(4+8*(index+1)))/(4)) - (2+Math.sqrt(4+8*(index+1)))/(4));
                     InsidePartsRemainder = (float) (Math.round((2+Math.sqrt(4+8*(index-3)))/(4)) - (2+Math.sqrt(4+8*(index-3)))/(4));
 
@@ -158,7 +183,7 @@ public class MoveTemplate extends FallingBlockEntity {
 
     @Override
     public void tick() {
-
+        this.setDeltaMovement(BaseVelocity);
 //        System.out.println(this.getId());
 
 //        this.setDeltaMovement(this.getDeltaMovement().multiply(0.7, -0.5, 0.7));
