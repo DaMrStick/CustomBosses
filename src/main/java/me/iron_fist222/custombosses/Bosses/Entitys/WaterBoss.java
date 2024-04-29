@@ -2,9 +2,7 @@ package me.iron_fist222.custombosses.Bosses.Entitys;
 
 
 import com.mojang.serialization.Dynamic;
-import me.iron_fist222.custombosses.Bosses.Moves.MoveTemplate;
 import me.iron_fist222.custombosses.Bosses.Moves.WaterMoves.IcePush;
-import me.iron_fist222.custombosses.Bosses.Moves.WaterMoves.IceShoot;
 import me.iron_fist222.custombosses.Bosses.Moves.WaterMoves.IceSpike;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
@@ -29,6 +27,7 @@ import org.bukkit.util.Vector;
 import org.joml.Vector3d;
 
 import javax.annotation.Nullable;
+import java.util.Random;
 
 
 public class WaterBoss extends Villager implements RangedAttackMob {
@@ -83,8 +82,19 @@ public class WaterBoss extends Villager implements RangedAttackMob {
             //multiply the direction by 10 so that it will be 1 block in front of boss NOT USED RN
             Vector velocity = new Vector(DirectionToTarget.x*speed,DirectionToTarget.y*speed,DirectionToTarget.z*speed);
             Location loc = this.getBukkitEntity().getLocation();
-//            IcePush icePush = new IcePush(msWorld,new Vec3(loc.getX(),loc.getY()+1,loc.getZ()),new Vec3(velocity.getX(),velocity.getY(),velocity.getZ()),new Vec3(DirectionToTarget.x,DirectionToTarget.y,DirectionToTarget.z),3,(LivingEntity) this);
-            IceSpike iceSpike = new IceSpike(msWorld,new Vec3(loc.getX(),loc.getY()+1,loc.getZ()),new Vec3(velocity.getX(),velocity.getY(),velocity.getZ()),new Vec3(DirectionToTarget.x,DirectionToTarget.y,DirectionToTarget.z),2,(LivingEntity) this);
+            Random randomNumGenerator = new Random();
+            int CurrentMoveChosen = randomNumGenerator.nextInt(0,2);
+            System.out.println(CurrentMoveChosen);
+            switch (CurrentMoveChosen){
+                case 0:
+                    IceSpike iceSpike = new IceSpike(msWorld,new Vec3(loc.getX(),loc.getY()+1,loc.getZ()),new Vec3(velocity.getX(),velocity.getY(),velocity.getZ()),new Vec3(DirectionToTarget.x,DirectionToTarget.y,DirectionToTarget.z),2,(LivingEntity) this);
+                    break;
+                case 1:
+                    IcePush icePush = new IcePush(msWorld,new Vec3(loc.getX(),loc.getY()+1,loc.getZ()),new Vec3(velocity.getX(),velocity.getY(),velocity.getZ()),new Vec3(DirectionToTarget.x,DirectionToTarget.y,DirectionToTarget.z),3,(LivingEntity) this);;
+                    break;
+            }
+
+
 
 
         }

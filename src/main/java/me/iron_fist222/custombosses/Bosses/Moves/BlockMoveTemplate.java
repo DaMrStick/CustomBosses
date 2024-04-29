@@ -1,66 +1,46 @@
 package me.iron_fist222.custombosses.Bosses.Moves;
 
-import net.minecraft.commands.arguments.AngleArgument;
-import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.VarInt;
-import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.*;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerPlayerConnection;
-import net.minecraft.tags.FluidTags;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.item.FallingBlockEntity;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.context.DirectionalPlaceContext;
-import net.minecraft.world.level.ClipContext;
-import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.*;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.material.Fluids;
-import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import org.bukkit.craftbukkit.v1_20_R2.event.CraftEventFactory;
-import org.checkerframework.checker.units.qual.C;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Vector;
 
-public class MoveTemplate extends FallingBlockEntity {
+public class BlockMoveTemplate extends FallingBlockEntity {
 
     public LivingEntity shooter;
-    public List<MoveTemplate> blocks;
+    public List<BlockMoveTemplate> blocks;
     private BlockState blockState;
     public int time;
     public int lifetime = 60;
     public Vec3 BaseVelocity;
 
-    public MoveTemplate groupParent;
+    public BlockMoveTemplate groupParent;
 
-    public MoveTemplate(Level world){
+    public BlockMoveTemplate(Level world){
         super(EntityType.FALLING_BLOCK, world);
         this.setNoGravity(true);
     }
 
-    public MoveTemplate(Level world, Vec3 position, BlockState block){
+    public BlockMoveTemplate(Level world, Vec3 position, BlockState block){
         super(EntityType.FALLING_BLOCK,world);
         position = new Vec3(Math.round(position.x),Math.round(position.y),Math.round(position.z));
         this.teleportTo(position.x,position.y,position.z);
@@ -73,7 +53,7 @@ public class MoveTemplate extends FallingBlockEntity {
     }
 
 
-    public MoveTemplate(Level world, Vec3 defLoc, BlockState block, Vec3 velocity, Vec3 facingDir, int size, Class cls,LivingEntity shooter){
+    public BlockMoveTemplate(Level world, Vec3 defLoc, BlockState block, Vec3 velocity, Vec3 facingDir, int size, Class cls, LivingEntity shooter){
         super(EntityType.FALLING_BLOCK,world);
         defLoc = new Vec3(Math.round(defLoc.x),Math.round(defLoc.y),Math.round(defLoc.z));
         this.teleportTo(defLoc.x,defLoc.y,defLoc.z);
@@ -89,13 +69,13 @@ public class MoveTemplate extends FallingBlockEntity {
         world.addFreshEntity(this);
         this.shooter = shooter;
 
-        for(MoveTemplate Block : this.blocks){
+        for(BlockMoveTemplate Block : this.blocks){
             Block.groupParent = this;
         }
     }
 
-    public static List SummonMoveTri(Level world, Vec3 centralPos, BlockState block, Vec3 velocity, Vec3 facingDir, int size, Class<MoveTemplate> cls,LivingEntity shooter){
-        List<MoveTemplate> moveBlocks = new ArrayList<MoveTemplate>();
+    public static List SummonMoveTri(Level world, Vec3 centralPos, BlockState block, Vec3 velocity, Vec3 facingDir, int size, Class<BlockMoveTemplate> cls, LivingEntity shooter){
+        List<BlockMoveTemplate> moveBlocks = new ArrayList<BlockMoveTemplate>();
         Vec3 curentPos = centralPos;
         Vec3 rVector;
         Vec3 uVector;
@@ -123,8 +103,8 @@ public class MoveTemplate extends FallingBlockEntity {
                 try {
                     tempVector = new Vec3(0,0,0);
                     curentPos = centralPos;
-                    Constructor<MoveTemplate> ctr = cls.getConstructor(Level.class, Vec3.class, BlockState.class);
-                    MoveTemplate currentBlock = ctr.newInstance(world, centralPos, block);
+                    Constructor<BlockMoveTemplate> ctr = cls.getConstructor(Level.class, Vec3.class, BlockState.class);
+                    BlockMoveTemplate currentBlock = ctr.newInstance(world, centralPos, block);
 
                     int remainder = index%2;
                     if (NextLevelRemainder == 0 && index != 0){
@@ -172,12 +152,12 @@ public class MoveTemplate extends FallingBlockEntity {
         return moveBlocks;
     }
 
-    private static MoveTemplate createBlock(Level world,int current){
+    private static BlockMoveTemplate createBlock(Level world, int current){
         if (current == 0){
             return createBlock(world,current-1);
         }
 
-        return new MoveTemplate(world);
+        return new BlockMoveTemplate(world);
 
     }
 

@@ -1,6 +1,6 @@
 package me.iron_fist222.custombosses.Bosses.Moves.WaterMoves;
 
-import me.iron_fist222.custombosses.Bosses.Moves.MoveTemplate;
+import me.iron_fist222.custombosses.Bosses.Moves.BlockMoveTemplate;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -13,7 +13,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
 
-public class IceSpike extends MoveTemplate {
+public class IceSpike extends BlockMoveTemplate {
 
     public IceSpike(Level world, Vec3 pos, Vec3 velocity, Vec3 facingDir, int size,LivingEntity shooter){
         super(world,pos, Blocks.BLUE_ICE.defaultBlockState(),velocity,facingDir,size, IceSpike.class,shooter);
@@ -31,13 +31,13 @@ public class IceSpike extends MoveTemplate {
         hitEntity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 200, 3));
         hitEntity.hurt(((Entity) this.shooter).damageSources().magic(), 3);
         if(this.groupParent == null){
-            for(MoveTemplate block : this.blocks){
+            for(BlockMoveTemplate block : this.blocks){
                 if (block.position().distanceTo(this.position()) <= 5){
                     block.discard();
                 }
             }
         }else{
-            for(MoveTemplate block : this.groupParent.blocks){
+            for(BlockMoveTemplate block : this.groupParent.blocks){
                 if (block.position().distanceTo(this.position()) <= 5){
                     block.discard();
                 }

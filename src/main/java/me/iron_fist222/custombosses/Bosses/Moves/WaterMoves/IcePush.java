@@ -1,35 +1,16 @@
 package me.iron_fist222.custombosses.Bosses.Moves.WaterMoves;
 
-import com.google.common.base.Preconditions;
-import me.iron_fist222.custombosses.Bosses.Moves.MoveTemplate;
-import net.minecraft.network.FriendlyByteBuf;
+import me.iron_fist222.custombosses.Bosses.Moves.BlockMoveTemplate;
 import net.minecraft.network.protocol.game.ClientboundMoveEntityPacket;
-import net.minecraft.network.protocol.game.ClientboundPlayerInfoUpdatePacket;
-import net.minecraft.network.protocol.game.ClientboundPlayerPositionPacket;
-import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
-import net.minecraft.server.level.ChunkMap;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.animal.Pig;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.EntityHitResult;
-import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import org.bukkit.craftbukkit.v1_20_R2.CraftWorld;
-import org.bukkit.craftbukkit.v1_20_R2.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_20_R2.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_20_R2.util.CraftVector;
-import org.bukkit.util.Vector;
 
-import java.util.Iterator;
-import java.util.Set;
-
-public class IcePush extends MoveTemplate {
+public class IcePush extends BlockMoveTemplate {
 
 
 

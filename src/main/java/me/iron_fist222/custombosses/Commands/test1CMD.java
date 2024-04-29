@@ -1,6 +1,5 @@
 package me.iron_fist222.custombosses.Commands;
 
-import me.iron_fist222.custombosses.Bosses.Moves.MoveTemplate;
 import me.iron_fist222.custombosses.Bosses.Moves.WaterMoves.IcePush;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
